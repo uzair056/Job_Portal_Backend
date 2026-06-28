@@ -1,3 +1,5 @@
+from sqlalchemy.orm import Session
+
 from models.user import User
 
 # create user
@@ -31,6 +33,8 @@ def update_candidate(db, user_id, user):
 
     return candidate
 
+# delete user 
+
 def delete_candidate(db, user_id):
     candidate = db.query(User).filter(User.id == user_id).first()
 
@@ -42,8 +46,13 @@ def delete_candidate(db, user_id):
 
     return candidate
 
-def get_all_candidates(db):
-    return db.query(User).all()
+def get_all_candidates(db: Session):
+    return db.query(User).filter(
+        User.role == "candidate"
+    ).all()
 
 def get_candidate_by_id(db, user_id):
     return db.query(User).filter(User.id == user_id).first()
+
+
+

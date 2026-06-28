@@ -9,3 +9,6 @@ class UserUpdate(BaseModel):
     name: str
     email: EmailStr
     
+class RecruiterUpdate(BaseModel):
+    name: str
+    email: EmailStr

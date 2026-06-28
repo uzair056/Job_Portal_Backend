@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database import get_db
-from schemas.user import UserCreate, UserUpdate
+from schemas.user import RecruiterUpdate, UserCreate, UserUpdate
+from services.recruiter_service import  destroy_recruiter, edit_recruiter, index_recruiters, store_recruiter
 from services.user_service import (
     create_candidate,
     update_candidate,
@@ -23,7 +24,7 @@ def create_candidate_route(
     return create_candidate(db, user)
 
 
-
+# update candidate
 @router.put("/update_candidate/{user_id}")
 def update_candidate_route(
     user_id: int,
@@ -32,7 +33,7 @@ def update_candidate_route(
 ):
     return update_candidate(db, user_id, user)
 
-
+# delete candidate
 @router.delete("/delete_candidate/{user_id}")
 def delete_candidate_route(
     user_id: int,
@@ -40,7 +41,7 @@ def delete_candidate_route(
 ):
     return delete_candidate(db, user_id)
 
-
+# get all candidates
 @router.get("/candidates")
 def get_all_candidates_route(
     db: Session = Depends(get_db)
@@ -54,3 +55,49 @@ def get_candidate_by_id_route(
     db: Session = Depends(get_db)
 ):
     return get_candidate_by_id(db, user_id)
+
+# recruiters 
+# create recruiter
+
+@router.post("/create_recruiters")
+def create_recruiter_route(
+    user: UserCreate,
+    db: Session = Depends(get_db)
+):
+    return store_recruiter(db, user)
+
+
+# get all recruiters
+
+@router.get("/recruiters")
+def get_recruiters(
+    db: Session = Depends(get_db)
+):
+    return index_recruiters(db)
+
+# update recruiter
+
+@router.put("/update_recruiter/{id}")
+def update_recruiter(
+    id: int,
+    user: RecruiterUpdate,
+    db: Session = Depends(get_db)
+):
+    return edit_recruiter(
+        db,
+        id,
+        user
+    )
+    
+    
+# delete recruiter
+
+@router.delete("/delete_recruiter/{id}")
+def delete_recruiter(
+    id: int,
+    db: Session = Depends(get_db)
+):
+    return destroy_recruiter(
+        db,
+        id
+    )
