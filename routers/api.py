@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from schemas.auth import LoginSchema
+from services.auth_service import login
 
 from database import get_db
 from schemas.user import RecruiterUpdate, UserCreate, UserUpdate
@@ -100,4 +102,17 @@ def delete_recruiter(
     return destroy_recruiter(
         db,
         id
+    )
+    
+    
+# login route
+
+@router.post("/login")
+def login_route(
+    user: LoginSchema,
+    db: Session = Depends(get_db)
+):
+    return login(
+        db,
+        user
     )
