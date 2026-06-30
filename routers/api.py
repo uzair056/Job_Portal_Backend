@@ -1,11 +1,23 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from schemas.auth import LoginSchema
+from schemas.company import CompanyCreate
 from services.auth_service import login
-
+from models.user import User
+from middlewear.role_middlewear import role_required
+from auth.jwt_handler import get_current_user
 from database import get_db
 from schemas.user import RecruiterUpdate, UserCreate, UserUpdate
-from services.recruiter_service import  destroy_recruiter, edit_recruiter, index_recruiters, store_recruiter
+from services.recruiter_service import  (
+destroy_recruiter,
+edit_recruiter,
+index_recruiters,
+store_recruiter
+)
+from services.company_service import  (
+
+store_company
+)
 from services.user_service import (
     create_candidate,
     update_candidate,
@@ -115,4 +127,19 @@ def login_route(
     return login(
         db,
         user
+    )
+
+
+@router.post("/companies")
+def create_company(
+    company: CompanyCreate,
+    current_user=Depends(
+        role_required(["admin", "recruiter"])
+    ),
+    db: Session = Depends(get_db)
+):
+    return store_company(
+        db,
+        current_user,
+        company
     )
